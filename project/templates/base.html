@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pico.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='pico.colors.min.css') }}">
+    <title>Flask auth app</title>
+    <style>
+      :root {
+        --pico-font-size: 90%;
+      }
+      nav details.dropdown {
+        display: inline-block;
+      }
+      .login-form {
+        display: grid;
+        gap: 20px;
+        grid-template-columns: 1fr;
+      }
+      .success {
+        color: #398712;
+      }
+      .warning {
+        color: #e8d600;
+      }
+      .danger {
+        color: #d93526;
+      }
+
+      @media (min-width: 768px) {
+        .login-form {
+          display: grid;
+          grid-template-columns: 1fr 2fr 1fr;
+          grid-column-gap: 0px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header class="container">
+      <nav style="border-bottom: solid gray 1px;">
+        <ul>
+          <li><strong><a href="{{ url_for('main.index') }}" class="contrast">Flask Auth App</a></strong></li>
+        </ul>
+        <ul>
+        {% if current_user.is_authenticated %}
+          {% include 'user_menu.html' %}
+        {% else %}
+          <li>
+              <a href="{{ url_for('auth.login') }}">Login</a>
+          </li>
+        {% endif %}
+        </ul>
+      </nav>
+    {% include 'messages.html' %}
+    </header>
+    <main class="container">
+    {% block content %}
+    {% endblock %}
+    </main>
+    <footer class="container">
+    </footer>
+  </body>
+</html>

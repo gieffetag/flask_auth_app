@@ -1,0 +1,7 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for cat, msg in messages %}
+      <blockquote class="{{ cat }}">{{ msg }}</blockquote>
+    {% endfor %}
+  {% endif %}
+{% endwith %}

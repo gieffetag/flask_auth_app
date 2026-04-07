@@ -1,0 +1,29 @@
+# no .pyc files
+*.pyc
+*.pyo
+*.swp
+
+# no files ends with ~
+*~
+
+# no .bak.py .bak .log
+*.bak.py
+*.bak
+*.log
+
+# no DS_Store file
+.DS_Store
+
+# ignore all files in the backup/ directory
+backup/
+
+# ignore local environment file
+.env
+
+# virtualenv
+auth/
+
+# sqlite
+db.sqlite
+
+

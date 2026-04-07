@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block content %}
+<table class="striped">
+  <tbody>
+    <tr>
+      <td>ID<td>
+      <td>{{ current_user.user_id }}</td>
+    </tr>
+    <tr>
+      <td>Name<td>
+      <td>{{ current_user.name }}</td>
+    </tr>
+    <tr>
+      <td>Email<td>
+      <td>{{ current_user.email }}</td>
+    </tr>
+    <tr>
+      <td>Status<td>
+      <td>{{ current_user.status }}</td>
+    </tr>
+    <tr>
+      <td>IS Admin<td>
+      <td>{{ current_user.is_admin }}</td>
+    </tr>
+  </tbody>
+</table>
+{% endblock %}

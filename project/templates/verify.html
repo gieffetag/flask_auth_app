@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="login-form">
+  <div></div>
+  <div>
+    <hgroup style="text-align: center;">
+      <h4>Please, verify your Email Address</h4>
+      <p>We sent a 6-digit code to {{ current_user.email }}</p>
+    </hgroup>
+    <form method="POST" action="{{ url_for('auth.verify_email') }}">
+      <fieldset>
+        <input type="text" name="code" placeholder="123456" required maxlength="6">
+      </fieldset>
+      <input type="submit" value="Verify" />
+    </form>
+    <p>Haven't received the code? <a href="{{ url_for('auth.resend_code') }}">Re-send</a></p>
+  </div>
+  <div></div>
+</div>
+{% endblock %}
