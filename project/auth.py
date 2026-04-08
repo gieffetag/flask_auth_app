@@ -37,7 +37,7 @@ def require_verification():
             ]
             if request.endpoint not in allowed_endpoints:
                 flash("Please verify your email address to continue.", "warning")
-                return redirect(url_for("auth.verify_email"))
+                return redirect(url_for("auth.verify_email", next=request.full_path))
 
 
 @bp.route("/login")
@@ -50,6 +50,7 @@ def login_post():
     email = request.form.get("email")
     password = request.form.get("password")
     remember = True if request.form.get("remember") else False
+    next_page = _get_next()
 
     user = User.select(email=email)
     if user:
@@ -57,10 +58,10 @@ def login_post():
 
     if not user or not check_password_hash(user.password, password):
         flash("Please check your login details and try again.", "warning")
-        return redirect(url_for("auth.login"))
+        return redirect(url_for("auth.login", next=next_page))
 
     login_user(user, remember=remember)
-    return redirect(url_for("main.index"))  # next ?
+    return redirect(next_page)
 
 
 @bp.route("/signup")
@@ -108,23 +109,25 @@ def forgot():
 @login_required
 def verify_email():
     if current_user.is_verified:
-        return redirect(url_for("main.index"))  # next ?
+        next_page = _get_next()
+        return redirect(next_page)
     return render_template("verify.html")
 
 
 @bp.route("/verify", methods=["POST"])
 @login_required
 def verify_email_post():
+    next_page = _get_next()
     if current_user.is_verified:
-        return redirect(url_for("main.index"))  # next ?
+        return redirect(next_page)
     code = request.form.get("code")
     if code == current_user.verification_code:
         current_user.verified()
         flash("Email successfully verified! Welcome!", "success")
-        return redirect(url_for("main.index"))  # next ?
+        return redirect(next_page)
     else:
         flash("Invalid verification code. Please try again.", "danger")
-        return redirect(url_for("auth.verify_email"))
+        return redirect(url_for("auth.verify_email", next=next_page))
 
 
 @bp.route("/resend_code")
@@ -139,3 +142,10 @@ def resend_code():
 def logout():
     logout_user()
     return redirect(url_for("main.index"))
+
+
+def _get_next():
+    next_page = request.args.get("next")
+    if not next_page or not next_page.startswith("/") or next_page.startswith("//"):
+        next_page = url_for("main.index")
+    return next_page

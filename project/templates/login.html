@@ -8,7 +8,7 @@
       <h4>Welcome</h4>
       <p>Log in to {{ config.APP_NAME }}</p>
     </hgroup>
-    <form method="POST" action="{{ url_for('auth.login') }}">
+    <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
       <fieldset>
         <input type="email" name="email" placeholder="Email address*" autocomplete="email" />
       </fieldset>
