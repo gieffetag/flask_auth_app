@@ -1,3 +1,5 @@
+import os
+
 from dotenv import load_dotenv
 from flask import Flask
 from flask_login import LoginManager
@@ -17,6 +19,7 @@ def create_app():
     # Carico le variabili di ambiente
     app.config.from_prefixed_env()
     app.config["APP_NAME"] = "FlaskAuthApp"
+    app.config["EMAIL"] = load_email_config()
 
     # Inizializzazione e gestione del database
     db.init_app(app.config["DATABASE_URL"])
@@ -43,3 +46,14 @@ def create_app():
     app.register_blueprint(main.bp)
 
     return app
+
+
+def load_email_config():
+    email_config = {}
+    for key, value in os.environ.items():
+        if key.startswith("EMAIL_"):
+            config_key = key[6:].lower()
+            if config_key == "smtp_port":
+                value = int(value)
+            email_config[config_key] = value
+    return email_config

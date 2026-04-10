@@ -12,6 +12,7 @@ from flask_login import logout_user
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
+from . import mail
 from . import validate
 from .models import User
 
@@ -24,7 +25,7 @@ def require_verification():
         return
 
     if current_user.is_authenticated:
-        current_app.logger.info(f"endpoint: {request.endpoint}")
+        # current_app.logger.info(f"endpoint: {request.endpoint}")
         if not current_user.is_verified:
             # Note: you might need to prefix with blueprint name,
             # e.g., 'auth.verify_email'
@@ -95,6 +96,7 @@ def signup_post():
     flash("User %s created successfully" % new_user.user_id, category="success")
     user = User.get(new_user.user_id)
     user.generate_verification_code()
+    _send_verification_email(user)
     login_user(user)
     # return redirect(url_for("main.index"))
     return redirect(url_for("auth.verify_email"))
@@ -134,6 +136,7 @@ def verify_email_post():
 @login_required
 def resend_code():
     current_user.generate_verification_code()
+    _send_verification_email(current_user)
     return redirect(url_for("auth.verify_email"))
 
 
@@ -149,3 +152,29 @@ def _get_next():
     if not next_page or not next_page.startswith("/") or next_page.startswith("//"):
         next_page = url_for("main.index")
     return next_page
+
+
+def _send_verification_email(user):
+    content = (
+        f"Ciao {user.name or 'Utente'},\n\n"
+        f"Il tuo codice di verifica è: {user.verification_code}\n\n"
+        "Inseriscilo nell'applicazione per continuare."
+    )
+    subject = f"[{current_app.config.get('APP_NAME', 'App')}] Codice di verifica"
+
+    # Recupera un mittente predefinito da app.config, o usa un fallback
+    sender_email = current_app.config.get("EMAIL", {}).get(
+        "default_sender", f"noreply@example.com"
+    )
+
+    mail_args = {
+        "from": {
+            "name": current_app.config.get("APP_NAME", "App"),
+            "email": sender_email,
+        },
+        "to": [{"name": user.name or "Utente", "email": user.email}],
+        "subject": subject,
+        "content": content,
+    }
+
+    mail.send(mail_args)

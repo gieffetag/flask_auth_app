@@ -35,21 +35,18 @@ See docs at: https://github.com/kootenpv/yagmail
 
 """
 
-import smtplib
-import traceback
-
-try:
-    from email.MIMEText import MIMEText
-except ModuleNotFoundError:
-    from email.mime.text import MIMEText
-
 import logging
 import os
+import smtplib
+import traceback
+from email.mime.text import MIMEText
+
+from flask import current_app
 
 
 def test_gmail():
     logging.basicConfig(level=logging.DEBUG)
-    pard = {"EMAIL": {"service": "gmail", "oauth2_file": "oauth2_creds.json"}}
+    pard = {"EMAIL": {"service": "gmail", "oauth2_file": "~/.oauth2_creds.json"}}
     args = {
         "from": {"name": "Gianfranco Messori", "email": "messori.gf@gmail.com"},
         "to": [{"name": "Beppe", "email": "gmessori@gmail.com"}],
@@ -57,7 +54,7 @@ def test_gmail():
         "subject": "Prova wsgian email",
         "content": "Tutti i nodi vengono al pettine",
     }
-    send(pard, args)
+    send(args, pard)
 
 
 def test_api_smtp():
@@ -69,7 +66,7 @@ def test_api_smtp():
         "subject": "Prova wsgian email",
         "content": "Tutti i nodi vengono al pettine",
     }
-    send(pard, args)
+    send(args, pard)
 
 
 def test_api_sendgrid():
@@ -88,11 +85,11 @@ def test_api_sendgrid():
         "subject": "Prova wsgian email",
         "content": "Tutti i nodi vengono al pettine\n O no?",
     }
-    send(pard, args)
+    send(args, pard)
 
 
 # ------------------------------------------------------------------- #
-def send(pard, args):
+def send(args, pard=None):
     """
     New API Style methods for sending email
 
@@ -102,18 +99,18 @@ def send(pard, args):
             subject,
             content,
     """
-    args.setdefault(
-        "to",
-        [
-            {},
-        ],
-    )
+    args.setdefault("to", [{}])
     args.setdefault("from", {})
     args.setdefault("subject", "")
     args.setdefault("content", "")
 
+    if not pard:
+        pard = current_app.config
     pard.setdefault("EMAIL", {"service": "SMTP"})
-    if pard["EMAIL"]["service"] == "SMTP":
+
+    if current_app and (current_app.debug or current_app.testing):
+        result = {"status": "Success"}
+    elif pard["EMAIL"]["service"] == "SMTP":
         result = smtp_send(pard, args)
     elif pard["EMAIL"]["service"] == "sendgrid":
         result = sendgrid(pard, args)
@@ -126,7 +123,7 @@ def send(pard, args):
             "errors": "EMAIL Service `%(service)s` not available" % pard["EMAIL"],
         }
 
-    mail_log(pard, args, result)
+    mail_log(args, result)
     return result
 
 
@@ -208,12 +205,21 @@ def sendgrid(pard, args):
     return {"status": "Success", "message": response.content}
 
 
-def mail_log(pard, args, result):
-    logging.info("-" * 70)
-    logging.info("Sender: %s" % str(args["from"]))
-    logging.info("To: %s" % str(args["to"]))
-    logging.info("Subject: %s" % args["subject"])
-    logging.info("Body:\n%s" % str(args["content"]))
+def mail_log(args, result):
+    if current_app:
+        logger = current_app.logger
+    else:
+        logger = logging.getLogger(__name__)
+        logging.basicConfig(level=logging.DEBUG)
+    logger.info("-" * 70)
+    logger.info("Sender: %s" % str(args["from"]))
+    logger.info("To: %s" % str(args["to"]))
+    logger.info("Subject: %s" % args["subject"])
+    logger.info("Body:\n%s" % str(args["content"]))
     if result["status"] == "Failure":
-        logging.error("Send email failure:")
-        logging.error(result["errors"])
+        logger.error("Send email failure:")
+        logger.error(result["errors"])
+
+
+if __name__ == "__main__":
+    test_gmail()
