@@ -1,3 +1,5 @@
+import hashlib
+
 from flask import Blueprint
 from flask import current_app
 from flask import flash
@@ -9,6 +11,7 @@ from flask_login import current_user
 from flask_login import login_required
 from flask_login import login_user
 from flask_login import logout_user
+from itsdangerous import URLSafeTimedSerializer
 from werkzeug.security import check_password_hash
 from werkzeug.security import generate_password_hash
 
@@ -43,6 +46,8 @@ def require_verification():
 
 @bp.route("/login")
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
     return render_template("login.html")
 
 
@@ -67,6 +72,8 @@ def login_post():
 
 @bp.route("/signup")
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
     return render_template("signup.html")
 
 
@@ -100,11 +107,6 @@ def signup_post():
     login_user(user)
     # return redirect(url_for("main.index"))
     return redirect(url_for("auth.verify_email"))
-
-
-@bp.route("/forgot")
-def forgot():
-    return "Forgot!"
 
 
 @bp.route("/verify")
@@ -147,6 +149,77 @@ def logout():
     return redirect(url_for("main.index"))
 
 
+@bp.route("/forgot")
+def forgot():
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
+    return render_template("forgot.html")
+
+
+@bp.route("/forgot", methods=["POST"])
+def forgot_post():
+    email = request.form.get("email")
+    user = User.select(email=email)
+    if user:
+        # L'utente esiste, generiamo il token e inviamo la mail
+        user = user[0]
+        token = get_reset_token(user)
+        _send_password_reset_email(user, token)
+
+    flash(
+        "Se l'indirizzo email è registrato, "
+        "riceverai a breve un link per reimpostare la password.",
+        "success",
+    )
+    return redirect(url_for("auth.login"))
+
+
+@bp.route("/reset/<token>")
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for("main.index"))
+    # Verifica la validità del token
+    email = verify_reset_token(token)
+    if not email:
+        flash(
+            "Il link di recupero è invalido o scaduto. Richiedine uno nuovo.", "danger"
+        )
+        return redirect(url_for("auth.forgot"))
+
+    return render_template("reset.html", token=token)
+
+
+@bp.route("/reset/<token>", methods=["POST"])
+def reset_password_post(token):
+    ## Verifica Token
+    email = verify_reset_token(token)
+    if not email:
+        flash(
+            "Il link di recupero è invalido o scaduto. Richiedine uno nuovo.", "danger"
+        )
+        return redirect(url_for("auth.forgot"))
+
+    ## Valida la nuova password
+    validator = validate.Validator(request.form)
+    password = validator.check("password", "password")
+
+    if not validator.is_ok:
+        return render_template("reset.html", errors=validator.errors, token=token)
+
+    ## Aggiorna la password
+    user = User.select(email=email)[0]
+    user.update_password(generate_password_hash(password))
+
+    flash(
+        "La tua password è stata aggiornata con successo! Ora puoi fare il login.",
+        "success",
+    )
+    return redirect(url_for("auth.login"))
+
+
+# ------------------------------------------------------------------ #
+
+
 def _get_next():
     next_page = request.args.get("next")
     if not next_page or not next_page.startswith("/") or next_page.startswith("//"):
@@ -164,7 +237,7 @@ def _send_verification_email(user):
 
     # Recupera un mittente predefinito da app.config, o usa un fallback
     sender_email = current_app.config.get("EMAIL", {}).get(
-        "default_sender", f"noreply@example.com"
+        "default_sender", "noreply@example.com"
     )
 
     mail_args = {
@@ -177,4 +250,63 @@ def _send_verification_email(user):
         "content": content,
     }
 
+    mail.send(mail_args)
+
+
+def get_reset_token(user):
+    s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    pwd_sig = hashlib.sha256(user.password.encode()).hexdigest()[:16]
+
+    # Firma il payload con l'hash della password attuale cosi' dopo
+    # che la password e' stata modificata l'hash non e' piu' valido
+    payload = {"email": user.email, "pwd_sig": pwd_sig}
+    return s.dumps(payload, salt="password-reset-salt")
+
+
+def verify_reset_token(token, max_age=3600):
+    s = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    try:
+        payload = s.loads(token, salt="password-reset-salt", max_age=max_age)
+        email = payload.get("email")
+        token_pwd_sig = payload.get("pwd_sig")
+        user = User.select(email=email)
+        if not user:
+            return None
+        user = user[0]
+        current_pwd_sig = hashlib.sha256(user.password.encode()).hexdigest()[:16]
+
+        # Se l'hash della password attuale e' diverso dall'hash estratto
+        # dal token significa che il token e' gia' stato usato per
+        # reimpostare la password
+        if token_pwd_sig != current_pwd_sig:
+            return None
+
+        return email
+
+    except Exception:
+        return None
+
+
+def _send_password_reset_email(user, token):
+    reset_url = url_for("auth.reset_password", token=token, _external=True)
+    content = (
+        f"Ciao {user.name or 'Utente'},\n\n"
+        f"Per reimpostare la tua password, clicca sul seguente link:\n"
+        f"{reset_url}\n\n"
+        "Se non hai richiesto tu il reset, ignora semplicemente questa email."
+    )
+    subject = f"[{current_app.config.get('APP_NAME', 'App')}] Recupero Password"
+    sender_email = current_app.config.get("EMAIL", {}).get(
+        "default_sender", "noreply@example.com"
+    )
+
+    mail_args = {
+        "from": {
+            "name": current_app.config.get("APP_NAME", "App"),
+            "email": sender_email,
+        },
+        "to": [{"name": user.name or "Utente", "email": user.email}],
+        "subject": subject,
+        "content": content,
+    }
     mail.send(mail_args)

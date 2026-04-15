@@ -9,18 +9,27 @@
       <p>Sign up to {{ config.APP_NAME }} to continue</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.signup') }}">
+
       <fieldset>
         <input type="text" name="name" placeholder="Name*" autocomplete="name" value="{{ name }}"/>
         {% if errors and errors.name %}<small><span class="pico-color-red-300">{{ errors.name }}</span></small>{% endif %}
       </fieldset>
+
       <fieldset>
         <input type="email" name="email" placeholder="Email address*" autocomplete="email" value="{{ email }}"/>
         {% if errors and errors.email %}<small><span class="pico-color-red-300">{{ errors.email }}</span></small>{% endif %}
       </fieldset>
-      <fieldset>
-        <input type="password" name="password" placeholder="Password*" value="{{ password }}"/>
+
+      <fieldset style="position: relative;">
+        <input type="password" name="password" id="password_input" placeholder="Password*" value="{{ password }}"/>
+        <button type="button"
+                onclick="togglePasswordVisibility('password_input', this)"
+                style="position: absolute; right: 0; top: 0; height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2); border: none; background: transparent; color: var(--pico-muted-color); padding: 0 1rem; cursor: pointer; display: flex; align-items: center;">
+          <svg class="eye-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
         {% if errors and errors.password %}<small><span class="pico-color-red-300">{{ errors.password }}</span></small>{% endif %}
       </fieldset>
+
       <input type="submit" value="Continue" />
     </form>
     <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>

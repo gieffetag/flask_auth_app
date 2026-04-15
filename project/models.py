@@ -107,6 +107,25 @@ class User(UserMixin):
             )
         return self.verification_code
 
+    def update_password(self, new_password_hash):
+        if not self.user_id:
+            raise ValueError("User id cannot be null")
+        self.password = new_password_hash
+        sql = """
+            update user set
+                password = :password,
+                upd_ts = :upd_ts
+            where user_id = :user_id
+        """
+        with db.transaction() as conn:
+            db.execute(
+                sql,
+                conn,
+                user_id=self.user_id,
+                password=self.password,
+                upd_ts=utils.now(),
+            )
+
     @classmethod
     def select(cls, **kwargs):
         sql = ["select * from user"]
