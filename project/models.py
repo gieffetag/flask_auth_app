@@ -111,9 +111,13 @@ class User(UserMixin):
         if not self.user_id:
             raise ValueError("User id cannot be null")
         self.password = new_password_hash
+        self.is_verified = 1
+        self.verification_code = ""
         sql = """
             update user set
                 password = :password,
+                is_verified = 1,
+                verification_code = '',
                 upd_ts = :upd_ts
             where user_id = :user_id
         """
