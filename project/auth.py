@@ -217,6 +217,100 @@ def reset_password_post(token):
     return redirect(url_for("auth.login"))
 
 
+@bp.route("/settings")
+@login_required
+def settings():
+    return render_template("settings.html")
+
+
+@bp.route("/settings/name", methods=["POST"])
+@login_required
+def settings_name():
+    name = request.form.get("name")
+    errors = {}
+    if not name or len(name) < 3:
+        errors["name"] = "Il nome deve contenere almeno 3 caratteri."
+        return render_template(
+            "settings.html", open_modal="modal-name", name_input=name, errors=errors
+        )
+
+    current_user.update_name(name)
+    flash("Nome aggiornato con successo.", "success")
+    return redirect(url_for("auth.settings"))
+
+
+@bp.route("/settings/password", methods=["POST"])
+@login_required
+def settings_password():
+    current_pwd = request.form.get("current_password")
+    new_pwd = request.form.get("new_password")
+    errors = {}
+
+    if not check_password_hash(current_user.password, current_pwd):
+        errors["current_password"] = "La password attuale non è corretta."
+        return render_template(
+            "settings.html", open_modal="modal-password", errors=errors
+        )
+
+    validator = validate.Validator(request.form)
+    validator.check("new_password", "password")
+
+    if not validator.is_ok:
+        return render_template(
+            "settings.html", open_modal="modal-password", errors=validator.errors
+        )
+
+    current_user.update_password(generate_password_hash(new_pwd))
+    flash("Password aggiornata con successo.", "success")
+    return redirect(url_for("auth.settings"))
+
+
+@bp.route("/settings/email", methods=["POST"])
+@login_required
+def settings_email():
+    current_pwd = request.form.get("current_password")
+    new_email = request.form.get("new_email")
+    errors = {}
+
+    if not check_password_hash(current_user.password, current_pwd):
+        errors["current_password"] = "Password non corretta."
+        return render_template(
+            "settings.html",
+            open_modal="modal-email",
+            email_input=new_email,
+            errors=errors,
+        )
+
+    if User.select(email=new_email):
+        errors["new_email"] = "Email già in uso."
+        return render_template(
+            "settings.html",
+            open_modal="modal-email",
+            email_input=new_email,
+            errors=errors,
+        )
+
+    current_user.update_email(new_email)
+    current_user.generate_verification_code()
+    _send_verification_email(current_user)
+    flash("Email aggiornata. Controlla la posta per la verifica.", "success")
+    return redirect(url_for("main.index"))
+
+
+@bp.route("/settings/delete", methods=["POST"])
+@login_required
+def settings_delete():
+    current_pwd = request.form.get("current_password")
+    if not check_password_hash(current_user.password, current_pwd):
+        flash("Password errata. Impossibile eliminare l'account.", "danger")
+        return render_template("settings.html", open_modal="modal-delete")
+
+    current_user.delete_account()
+    logout_user()
+    flash("Account eliminato definitivamente.", "success")
+    return redirect(url_for("main.index"))
+
+
 # ------------------------------------------------------------------ #
 
 
