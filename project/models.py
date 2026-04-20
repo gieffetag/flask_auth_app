@@ -130,6 +130,40 @@ class User(UserMixin):
                 upd_ts=utils.now(),
             )
 
+    def update_name(self, new_name):
+        if not self.user_id:
+            raise ValueError("User id cannot be null")
+        self.name = new_name
+        sql = "update user set name = :name, upd_ts = :upd_ts where user_id = :user_id"
+        with db.transaction() as conn:
+            db.execute(
+                sql, conn, name=self.name, upd_ts=utils.now(), user_id=self.user_id
+            )
+
+    def update_email(self, new_email):
+        if not self.user_id:
+            raise ValueError("User id cannot be null")
+        self.email = new_email
+        self.is_verified = 0
+        sql = """
+            update user set
+                email = :email,
+                is_verified = 0,
+                upd_ts = :upd_ts
+            where user_id = :user_id
+        """
+        with db.transaction() as conn:
+            db.execute(
+                sql, conn, email=self.email, upd_ts=utils.now(), user_id=self.user_id
+            )
+
+    def delete_account(self):
+        if not self.user_id:
+            raise ValueError("User id cannot be null")
+        sql = "delete from user where user_id = :user_id"
+        with db.transaction() as conn:
+            db.execute(sql, conn, user_id=self.user_id)
+
     @classmethod
     def select(cls, **kwargs):
         sql = ["select * from user"]
