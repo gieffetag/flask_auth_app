@@ -7,6 +7,7 @@ from flask import redirect
 from flask import render_template
 from flask import request
 from flask import url_for
+from flask_babel import _
 from flask_login import current_user
 from flask_login import login_required
 from flask_login import login_user
@@ -220,22 +221,32 @@ def reset_password_post(token):
 @bp.route("/settings")
 @login_required
 def settings():
-    return render_template("settings.html")
+    return render_template("settings.html", language_dict=language_dict())
 
 
 @bp.route("/settings/name", methods=["POST"])
 @login_required
-def settings_name():
+def settings_profile():
     name = request.form.get("name")
+    locale = request.form.get("locale")
     errors = {}
     if not name or len(name) < 3:
         errors["name"] = "Il nome deve contenere almeno 3 caratteri."
+    if locale not in language_dict().keys():
+        errors["locale"] = "Lingua non gestita"
+
+    if errors:
         return render_template(
-            "settings.html", open_modal="modal-name", name_input=name, errors=errors
+            "settings.html",
+            open_modal="modal-profile",
+            name_input=name,
+            locale_input=locale,
+            errors=errors,
+            language_dict=language_dict(),
         )
 
-    current_user.update_name(name)
-    flash("Nome aggiornato con successo.", "success")
+    current_user.update_profile(name, locale)
+    flash("Profilo aggiornato con successo.", "success")
     return redirect(url_for("auth.settings"))
 
 
@@ -404,3 +415,11 @@ def _send_password_reset_email(user, token):
         "content": content,
     }
     mail.send(mail_args)
+
+
+def language_dict():
+    ll = {
+        "it": _("Italiano"),
+        "en": _("Inglese"),
+    }
+    return ll

@@ -1,0 +1,7 @@
+babel
+dotenv
+Flask
+flask-babel
+Flask-Login
+SQLAlchemy
+yagmail

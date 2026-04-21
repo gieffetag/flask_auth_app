@@ -16,6 +16,7 @@ class User(UserMixin):
     email: str = ""
     password: str = ""
     name: str = ""
+    locale: str = "it"
     is_active_account: int = 0
     is_verified: int = 0
     verification_code: str = ""
@@ -32,6 +33,7 @@ class User(UserMixin):
             email                    varchar(100) NOT NULL,
             password                 varchar(100) NOT NULL,
             name                     varchar(255),
+            locale                   varchar(2) not null default 'it',
             is_active_account        tinyint(1) not null default 0,
             is_verified              tinyint(1) not null default 0,
             verification_code        varchar(6) not null default '',
@@ -59,9 +61,9 @@ class User(UserMixin):
         self.is_active_account = 1
         sql = """
             insert into user
-                (user_id, email, password, name, is_active_account, is_admin, ins_ts, upd_ts)
+                (user_id, email, password, name, locale, is_active_account, is_admin, ins_ts, upd_ts)
             values
-                (:user_id, :email, :password, :name, :is_active_account, :is_admin, :ins_ts, :upd_ts)
+                (:user_id, :email, :password, :name, :locale, :is_active_account, :is_admin, :ins_ts, :upd_ts)
         """  # noqa: E501
         with db.transaction() as conn:
             db.execute(sql, conn, **asdict(self))
@@ -138,6 +140,27 @@ class User(UserMixin):
         with db.transaction() as conn:
             db.execute(
                 sql, conn, name=self.name, upd_ts=utils.now(), user_id=self.user_id
+            )
+
+    def update_profile(self, new_name, new_locale):
+        if not self.user_id:
+            raise ValueError("User id cannot be null")
+        self.locale = new_locale
+        self.name = new_name
+        sql = """update user set
+                    name = :name,
+                    locale = :locale,
+                    upd_ts = :upd_ts
+                 where user_id = :user_id
+        """
+        with db.transaction() as conn:
+            db.execute(
+                sql,
+                conn,
+                name=self.name,
+                locale=self.locale,
+                upd_ts=utils.now(),
+                user_id=self.user_id,
             )
 
     def update_email(self, new_email):
