@@ -67,7 +67,6 @@
         {% for (k, v) in language_dict.items() %}
           <option value="{{ k }}" {% if k == locale_input %}selected{% endif %}>{{ v }}</option>
         {% endfor %}
-          <option value="kk">Sbagliato</option>
         </select>
         {% if errors and errors.locale %}
           <small style="color: var(--pico-del-color); display: block; margin-top: 0.25rem;">{{ errors.locale }}</small>

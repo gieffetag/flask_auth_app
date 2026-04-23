@@ -105,7 +105,7 @@ def signup_post():
     new_user = User(email=email, name=name, password=generate_password_hash(password))
     new_user.add()
     flash(
-        _("User %(user_id)s created successfully", user_id=new_user.user_id),
+        _("Utente %(user_id)s creato con successo", user_id=new_user.user_id),
         category="success",
     )
     user = User.get(new_user.user_id)

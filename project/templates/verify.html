@@ -12,7 +12,7 @@
       <fieldset>
         <input type="text" name="code" placeholder="123456" required maxlength="6">
       </fieldset>
-      <input type="submit" value="Verify" />
+      <input type="submit" value="{{ _('Verifica') }}" />
     </form>
     <p>{{ _("Non hai ricevuto il codice?") }} <a href="{{ url_for('auth.resend_code') }}">{{ _("Rimanda il codice") }}</a></p>
   </div>

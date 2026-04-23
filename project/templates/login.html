@@ -6,7 +6,7 @@
   <div>
     <hgroup style="text-align: center;">
       <h4>{{ _("Benvenuto") }}</h4>
-      <p>Accedi a {{ config.APP_NAME }}</p>
+      <p>{{ _("Accedi a") }} {{ config.APP_NAME }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
       <fieldset>

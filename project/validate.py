@@ -67,7 +67,7 @@ def ascii_string(s, prop=""):
     if not ascii_pat.match(s):
         raise ValueError(
             _(
-                "Qualcosa non va con %(nome)s, prova as usare solo"
+                "Qualcosa non va con %(nome)s, prova ad usare solo"
                 " lettere e numeri o i caratteri `_`, `.`",
                 nome=name,
             )

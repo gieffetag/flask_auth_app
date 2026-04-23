@@ -26,4 +26,8 @@ auth/
 # sqlite
 db.sqlite
 
+# Flask-Babel / Translations
+messages.pot
+*.mo
+
 

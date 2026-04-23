@@ -1,0 +1,479 @@
+# English translations for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-04-23 11:25+0200\n"
+"PO-Revision-Date: 2026-04-23 11:28+0200\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: en\n"
+"Language-Team: en <LL@li.org>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: project/auth.py:45
+msgid "Per favore verifica il tuo indirizzo email per continuare"
+msgstr "Please verify your email address to continue"
+
+#: project/auth.py:70
+msgid "Per favore verifica le tue credenziali e riprova"
+msgstr "Please check your credentials and try again"
+
+#: project/auth.py:94
+msgid "L'indirizzo email specificato esiste già"
+msgstr "The specified email address already exists"
+
+#: project/auth.py:108
+#, python-format
+msgid "Utente %(user_id)s creato con successo"
+msgstr "User %(user_id)s created successfully"
+
+#: project/auth.py:137
+msgid "Email verificata con successo!"
+msgstr "Email verified successfully!"
+
+#: project/auth.py:140
+msgid "Codice di verifica non valido. Riprova."
+msgstr "Invalid verification code. Please try again."
+
+#: project/auth.py:178
+msgid ""
+"Se l'indirizzo email è registrato, riceverai a breve un link per "
+"reimpostare la password."
+msgstr ""
+"If the email address is registered, you will shortly receive a link to "
+"reset your password."
+
+#: project/auth.py:194 project/auth.py:208
+msgid "Il link di recupero è invalido o scaduto. Richiedine uno nuovo."
+msgstr "The recovery link is invalid or expired. Please request a new one."
+
+#: project/auth.py:225
+msgid "La tua password è stata aggiornata con successo! Ora puoi fare il login."
+msgstr "Your password has been successfully updated! You can now log in."
+
+#: project/auth.py:244
+msgid "Il nome deve contenere almeno 3 caratteri."
+msgstr "The name must contain at least 3 characters."
+
+#: project/auth.py:246
+msgid "Lingua non gestita"
+msgstr "Language not supported"
+
+#: project/auth.py:259
+msgid "Profilo aggiornato con successo."
+msgstr "Profile updated successfully."
+
+#: project/auth.py:271
+msgid "La password attuale non è corretta."
+msgstr "The current password is incorrect."
+
+#: project/auth.py:291
+msgid "Password aggiornata con successo."
+msgstr "Password updated successfully."
+
+#: project/auth.py:303
+msgid "Password non corretta."
+msgstr "Incorrect password."
+
+#: project/auth.py:313
+msgid "Email già in uso."
+msgstr "Email already in use."
+
+#: project/auth.py:325
+msgid "Email aggiornata. Controlla la posta per la verifica."
+msgstr "Email updated. Check your inbox for verification."
+
+#: project/auth.py:336
+msgid "Password errata. Impossibile eliminare l'account."
+msgstr "Incorrect password. Cannot delete the account."
+
+#: project/auth.py:347
+msgid "Account eliminato definitivamente."
+msgstr "Account permanently deleted."
+
+#: project/auth.py:363
+#, python-format
+msgid ""
+"Ciao %(user_name)s,\n"
+"\n"
+"Il tuo codice di verifica è: %(verification_code)s\n"
+"\n"
+"Inseriscilo nell'applicazione per continuare."
+msgstr ""
+"Hi %(user_name)s,\n"
+"\n"
+"Your verification code is: %(verification_code)s\n"
+"\n"
+"Enter it in the application to continue."
+
+#: project/auth.py:371
+#, python-format
+msgid "[%(app)s] Codice di verifica"
+msgstr "[%(app)s] Verification code"
+
+#: project/auth.py:429
+#, python-format
+msgid ""
+"Ciao %(user_name)s,\n"
+"\n"
+"Per reimpostare la tua password, clicca sul seguente link:\n"
+"%(reset_url)s\n"
+"\n"
+"Se non hai richiesto tu il reset, ignora semplicemente questa email."
+msgstr ""
+"Hi %(user_name)s,\n"
+"\n"
+"To reset your password, click on the following link:\n"
+"%(reset_url)s\n"
+"\n"
+"If you didn't request a password reset, please ignore this email."
+
+#: project/auth.py:437
+#, python-format
+msgid "[%(app)s] Recupero Password"
+msgstr "[%(app)s] Password Recovery"
+
+#: project/auth.py:462
+msgid "Italiano"
+msgstr "Italian"
+
+#: project/auth.py:463
+msgid "Inglese"
+msgstr "English"
+
+#: project/validate.py:22
+#, python-format
+msgid "Un valore è richiesto per %(field)s"
+msgstr "A value is required for %(field)s"
+
+#: project/validate.py:45
+#, python-format
+msgid "dovrebbe essere una stringa, ma ho trovato %(tipo)s"
+msgstr "should be a string, but found %(tipo)s"
+
+#: project/validate.py:60
+#, python-format
+msgid "`%(name)s` dovrebbe essere una stringa, ma ho trovato %(tipo)s"
+msgstr "`%(name)s` should be a string, but found %(tipo)s"
+
+#: project/validate.py:66
+#, python-format
+msgid "`%(nome)s` dovrebbe essere almeno di 4 lettere"
+msgstr "`%(nome)s` should be at least 4 characters long"
+
+#: project/validate.py:70
+#, python-format
+msgid ""
+"Qualcosa non va con %(nome)s, prova ad usare solo lettere e numeri o i "
+"caratteri `_`, `.`"
+msgstr ""
+"Something is wrong with %(nome)s, try using only letters and numbers or "
+"the characters `_`, `.`"
+
+#: project/validate.py:85
+#, python-format
+msgid "`%(email)s` non sembra essere un indirizzo email"
+msgstr "`%(email)s` does not look like an email address"
+
+#: project/validate.py:97
+msgid "Password non può essere vuota."
+msgstr "Password cannot be empty."
+
+#: project/validate.py:100
+msgid "Password dovrebbe avere almeno 8 caratteri."
+msgstr "Password should be at least 8 characters long."
+
+#: project/validate.py:103
+msgid "Password dovrebbe contenere almeno una lettera maiuscola."
+msgstr "Password should contain at least one uppercase letter."
+
+#: project/validate.py:106
+msgid "Password dovrebbe contenere almeno un numero."
+msgstr "Password should contain at least one number."
+
+#: project/validate.py:109
+msgid "Password dovrebbe contenere almeno un carattere speciale."
+msgstr "Password should contain at least one special character."
+
+#: project/validate.py:154
+#, python-format
+msgid "%(date_name)s: -1- data non valida `%(_s)s`"
+msgstr "%(date_name)s: -1- invalid date `%(_s)s`"
+
+#: project/validate.py:162
+#, python-format
+msgid "%(date_name)s: -2- data non numerica `%(_s)s`"
+msgstr "%(date_name)s: -2- non-numeric date `%(_s)s`"
+
+#: project/validate.py:172
+#, python-format
+msgid "%(date_name)s: -4- mese non valido `%(_s)s`"
+msgstr "%(date_name)s: -4- invalid month `%(_s)s`"
+
+#: project/validate.py:184
+#, python-format
+msgid "%(date_name)s: -3- data non valida `%(_s)s`"
+msgstr "%(date_name)s: -3- invalid date `%(_s)s`"
+
+#: project/validate.py:197
+#, python-format
+msgid "%(date_name)s: -5- giorno non valido `%(_s)s`"
+msgstr "%(date_name)s: -5- invalid day `%(_s)s`"
+
+#: project/validate.py:219
+#, python-format
+msgid "%(date_name)s: -6- data non valida `%(_s)s`"
+msgstr "%(date_name)s: -6- invalid date `%(_s)s`"
+
+#: project/validate.py:224
+#, python-format
+msgid "%(date_name)s: -7- anno non valido `%(_s)s`"
+msgstr "%(date_name)s: -7- invalid year `%(_s)s`"
+
+#: project/validate.py:230
+#, python-format
+msgid "%(date_name)s: -8- giorno non valido `%(_s)s`"
+msgstr "%(date_name)s: -8- invalid day `%(_s)s`"
+
+#: project/validate.py:255 project/validate.py:257
+msgid "Non è un numero intero"
+msgstr "Not an integer"
+
+#: project/validate.py:259
+msgid "Numero troppo grande"
+msgstr "Number too large"
+
+#: project/validate.py:277 project/validate.py:283
+msgid "Non è un numero"
+msgstr "Not a number"
+
+#: project/templates/forgot.html:8
+msgid "Password dimenticata"
+msgstr "Forgot password"
+
+#: project/templates/forgot.html:9
+msgid "Inserisci la tua email per ricevere il link di reset."
+msgstr "Enter your email to receive the reset link."
+
+#: project/templates/forgot.html:13 project/templates/signup.html:19
+msgid "Indirizzo email"
+msgstr "Email address"
+
+#: project/templates/forgot.html:15
+msgid "Invia link di reset"
+msgstr "Send reset link"
+
+#: project/templates/forgot.html:17
+msgid "Torna al login"
+msgstr "Back to login"
+
+#: project/templates/login.html:8 project/templates/signup.html:8
+msgid "Benvenuto"
+msgstr "Welcome"
+
+#: project/templates/login.html:9
+msgid "Accedi a"
+msgstr "Log in to"
+
+#: project/templates/login.html:26
+msgid "Ricordami"
+msgstr "Remember me"
+
+#: project/templates/login.html:28
+msgid "Hai dimenticato la password"
+msgstr "Forgot your password"
+
+#: project/templates/login.html:29 project/templates/signup.html:33
+msgid "Continua"
+msgstr "Continue"
+
+#: project/templates/login.html:31
+msgid "Non hai un account?"
+msgstr "Don't have an account?"
+
+#: project/templates/login.html:31
+msgid "Iscriviti."
+msgstr "Sign up."
+
+#: project/templates/profile.html:5
+msgid "Profilo Utente"
+msgstr "User Profile"
+
+#: project/templates/profile.html:15 project/templates/settings.html:13
+#: project/templates/signup.html:14
+msgid "Nome"
+msgstr "Name"
+
+#: project/templates/profile.html:23
+msgid "Stato"
+msgstr "Status"
+
+#: project/templates/profile.html:27
+msgid "Amministratore"
+msgstr "Administrator"
+
+#: project/templates/reset.html:8
+msgid "Reimposta Password"
+msgstr "Reset Password"
+
+#: project/templates/reset.html:9
+msgid "Inserisci la tua nuova password."
+msgstr "Enter your new password."
+
+#: project/templates/reset.html:13
+msgid "Nuova password"
+msgstr "New password"
+
+#: project/templates/reset.html:21
+msgid "Aggiorna password"
+msgstr "Update password"
+
+#: project/templates/settings.html:5
+msgid "Impostazioni Account"
+msgstr "Account Settings"
+
+#: project/templates/settings.html:6
+msgid "Gestisci le tue informazioni personali e la sicurezza del tuo profilo."
+msgstr "Manage your personal information and profile security."
+
+#: project/templates/settings.html:11 project/templates/user_menu.html:7
+msgid "Profilo"
+msgstr "Profile"
+
+#: project/templates/settings.html:14 project/templates/settings.html:62
+msgid "Lingua"
+msgstr "Language"
+
+#: project/templates/settings.html:16 project/templates/settings.html:22
+msgid "Modifica"
+msgstr "Edit"
+
+#: project/templates/settings.html:28
+msgid "Sicurezza"
+msgstr "Security"
+
+#: project/templates/settings.html:29
+msgid "Mantieni il tuo account protetto aggiornando regolarmente la password."
+msgstr "Keep your account secure by regularly updating your password."
+
+#: project/templates/settings.html:30 project/templates/settings.html:130
+msgid "Modifica Password"
+msgstr "Change Password"
+
+#: project/templates/settings.html:34
+msgid "Chiusura Profilo"
+msgstr "Close Profile"
+
+#: project/templates/settings.html:35
+msgid ""
+"Elimina definitivamente il tuo account e tutti i dati associati dal "
+"sistema."
+msgstr "Permanently delete your account and all associated data from the system."
+
+#: project/templates/settings.html:36 project/templates/settings.html:177
+msgid "Elimina Account"
+msgstr "Delete Account"
+
+#: project/templates/settings.html:44
+msgid "Modifica Profilo"
+msgstr "Edit Profile"
+
+#: project/templates/settings.html:48
+msgid "Nuovo Nome"
+msgstr "New Name"
+
+#: project/templates/settings.html:77
+msgid "Salva Profilo"
+msgstr "Save Profile"
+
+#: project/templates/settings.html:87
+msgid "Modifica Email"
+msgstr "Change Email"
+
+#: project/templates/settings.html:90
+msgid "Nota: dovrai verificare nuovamente il nuovo indirizzo tramite codice OTP."
+msgstr "Note: you will need to verify the new address again via OTP code."
+
+#: project/templates/settings.html:93
+msgid "Nuova Email"
+msgstr "New Email"
+
+#: project/templates/settings.html:104 project/templates/settings.html:135
+msgid "Password attuale"
+msgstr "Current password"
+
+#: project/templates/settings.html:120
+msgid "Richiedi Cambio Email"
+msgstr "Request Email Change"
+
+#: project/templates/settings.html:151
+msgid "Nuova Password"
+msgstr "New Password"
+
+#: project/templates/settings.html:167
+msgid "Salva Nuova Password"
+msgstr "Save New Password"
+
+#: project/templates/settings.html:180
+msgid "Questa azione è irreversibile. Tutti i tuoi dati verranno cancellati."
+msgstr "This action is irreversible. All your data will be deleted."
+
+#: project/templates/settings.html:183
+msgid "Conferma con la tua password attuale"
+msgstr "Confirm with your current password"
+
+#: project/templates/settings.html:197
+msgid "Eliminare definitivamente l'account"
+msgstr "Permanently delete the account"
+
+#: project/templates/settings.html:199
+msgid "Elimina Profilo"
+msgstr "Delete Profile"
+
+#: project/templates/signup.html:9
+msgid "Registrati a"
+msgstr "Sign up to"
+
+#: project/templates/signup.html:9
+msgid "per continuare"
+msgstr "to continue"
+
+#: project/templates/signup.html:35
+msgid "Hai già un account?"
+msgstr "Already have an account?"
+
+#: project/templates/signup.html:35
+msgid "Accedi"
+msgstr "Log in"
+
+#: project/templates/user_menu.html:8
+msgid "Configurazione"
+msgstr "Settings"
+
+#: project/templates/verify.html:8
+msgid "Per favore verifica il tuo indirizzo Email"
+msgstr "Please verify your Email address"
+
+#: project/templates/verify.html:9
+msgid "Abbiamo inviato un codice di 6 cifre a"
+msgstr "We have sent a 6-digit code to"
+
+#: project/templates/verify.html:15
+msgid "Verifica"
+msgstr "Verify"
+
+#: project/templates/verify.html:17
+msgid "Non hai ricevuto il codice?"
+msgstr "Didn't receive the code?"
+
+#: project/templates/verify.html:17
+msgid "Rimanda il codice"
+msgstr "Resend the code"
