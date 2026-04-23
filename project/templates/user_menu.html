@@ -4,8 +4,8 @@
        {{ current_user.name }}
     </summary>
     <ul dir="rtl">
-      <li><a href="{{ url_for('main.profile') }}">Profile</a></li>
-      <li><a href="{{ url_for('auth.settings') }}">Settings</a></li>
+      <li><a href="{{ url_for('main.profile') }}">{{ _("Profilo") }}</a></li>
+      <li><a href="{{ url_for('auth.settings') }}">{{ _("Configurazione") }}</a></li>
       <li><a href="{{ url_for('auth.logout') }}">Logout</a></li>
     </ul>
   </details>

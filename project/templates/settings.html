@@ -2,38 +2,38 @@
 
 {% block content %}
 <hgroup>
-  <h2>Impostazioni Account</h2>
-  <p>Gestisci le tue informazioni personali e la sicurezza del tuo profilo.</p>
+  <h2>{{ _("Impostazioni Account") }}</h2>
+  <p>{{ _("Gestisci le tue informazioni personali e la sicurezza del tuo profilo.") }}</p>
 </hgroup>
 
 <div class="grid">
   <article>
-    <header><strong>Profilo</strong></header>
+    <header><strong>{{ _("Profilo") }}</strong></header>
     <p>
-        <strong>Nome:</strong> {{ current_user.name }}<br>
-        <strong>Lingua:</strong> {{ language_dict[current_user.locale] }}
+        <strong>{{ _("Nome") }}:</strong> {{ current_user.name }}<br>
+        <strong>{{ _("Lingua") }}:</strong> {{ language_dict[current_user.locale] }}
     </p>
-    <button class="secondary outline" onclick="document.getElementById('modal-profile').showModal()">Modifica</button>
+    <button class="secondary outline" onclick="document.getElementById('modal-profile').showModal()">{{ _("Modifica") }}</button>
   </article>
 
   <article>
     <header><strong>Email</strong></header>
     <p>{{ current_user.email }}</p>
-    <button class="secondary outline" onclick="document.getElementById('modal-email').showModal()">Modifica</button>
+    <button class="secondary outline" onclick="document.getElementById('modal-email').showModal()">{{ _("Modifica") }}</button>
   </article>
 </div>
 
 <div class="grid">
   <article>
-    <header><strong>Sicurezza</strong></header>
-    <p>Mantieni il tuo account protetto aggiornando regolarmente la password.</p>
-    <button class="secondary outline" onclick="document.getElementById('modal-password').showModal()">Modifica Password</button>
+    <header><strong>{{ _("Sicurezza") }}</strong></header>
+    <p>{{ _("Mantieni il tuo account protetto aggiornando regolarmente la password.") }}</p>
+    <button class="secondary outline" onclick="document.getElementById('modal-password').showModal()">{{ _("Modifica Password") }}</button>
   </article>
 
   <article>
-    <header><strong>Chiusura Profilo</strong></header>
-    <p>Elimina definitivamente il tuo account e tutti i dati associati dal sistema.</p>
-    <button class="contrast outline" onclick="document.getElementById('modal-delete').showModal()">Elimina Account</button>
+    <header><strong>{{ _("Chiusura Profilo") }}</strong></header>
+    <p>{{ _("Elimina definitivamente il tuo account e tutti i dati associati dal sistema.") }}</p>
+    <button class="contrast outline" onclick="document.getElementById('modal-delete').showModal()">{{ _("Elimina Account") }}</button>
   </article>
 </div>
 
@@ -41,11 +41,11 @@
   <article>
     <header>
       <button aria-label="Close" rel="prev" onclick="document.getElementById('modal-profile').close()"></button>
-      <strong>Modifica Profilo</strong>
+      <strong>{{ _("Modifica Profilo") }}</strong>
     </header>
     <form action="{{ url_for('auth.settings_profile') }}" method="POST" style="margin-bottom: 0;" autocomplete="off">
       <fieldset>
-        <label for="name">Nuovo Nome</label>
+        <label for="name">{{ _("Nuovo Nome") }}</label>
         <input type="text" id="name" name="name"
                value="{{ name_input | default(current_user.name) }}"
                {% if errors and errors.name %}aria-invalid="true"{% endif %}
@@ -59,7 +59,7 @@
         {% set locale_input = current_user.locale %}
       {% endif %}
       <fieldset>
-        <label>Lingua</label>
+        <label>{{ _("Lingua") }}</label>
         <select name="locale"
                 aria-label="Select your language..."
                 {% if errors and errors.locale %}aria-invalid="true"{% endif %}
@@ -75,7 +75,7 @@
       </fieldset>
 
       <footer style="display: flex; justify-content: flex-end;">
-        <button type="submit" style="width: auto; margin-bottom: 0;">Salva Profilo</button>
+        <button type="submit" style="width: auto; margin-bottom: 0;">{{ _("Salva Profilo") }}</button>
       </footer>
     </form>
   </article>
@@ -85,13 +85,13 @@
   <article>
     <header>
       <button aria-label="Close" rel="prev" onclick="document.getElementById('modal-email').close()"></button>
-      <strong>Modifica Email</strong>
+      <strong>{{ _("Modifica Email") }}</strong>
     </header>
     <form action="{{ url_for('auth.settings_email') }}" method="POST" style="margin-bottom: 0;" autocomplete="off">
-      <p><small>Nota: dovrai verificare nuovamente il nuovo indirizzo tramite codice OTP.</small></p>
+      <p><small>{{ _("Nota: dovrai verificare nuovamente il nuovo indirizzo tramite codice OTP.") }}</small></p>
 
       <fieldset>
-        <label for="new_email">Nuova Email</label>
+        <label for="new_email">{{ _("Nuova Email") }}</label>
         <input type="email" id="new_email" name="new_email"
                value="{{ email_input | default(current_user.email) }}"
                {% if errors and errors.new_email %}aria-invalid="true"{% endif %}
@@ -102,7 +102,7 @@
       </fieldset>
 
       <fieldset>
-        <label for="pwd_eml">Password attuale</label>
+        <label for="pwd_eml">{{ _("Password attuale") }}</label>
         <div style="position: relative;">
           <input type="password" name="current_password" id="pwd_eml"
                  {% if errors and errors.current_password %}aria-invalid="true"{% endif %}
@@ -118,7 +118,7 @@
       </fieldset>
 
       <footer style="display: flex; justify-content: flex-end;">
-        <button type="submit" style="width: auto; margin-bottom: 0;">Richiedi Cambio Email</button>
+        <button type="submit" style="width: auto; margin-bottom: 0;">{{ _("Richiedi Cambio Email") }}</button>
       </footer>
     </form>
   </article>
@@ -128,12 +128,12 @@
   <article>
     <header>
       <button aria-label="Close" rel="prev" onclick="document.getElementById('modal-password').close()"></button>
-      <strong>Modifica Password</strong>
+      <strong>{{ _("Modifica Password") }}</strong>
     </header>
     <form action="{{ url_for('auth.settings_password') }}" method="POST" style="margin-bottom: 0;" autocomplete="off">
 
       <fieldset>
-        <label for="old_pwd">Password attuale</label>
+        <label for="old_pwd">{{ _("Password attuale") }}</label>
         <div style="position: relative;">
           <input type="password" name="current_password" id="old_pwd"
                  {% if errors and errors.current_password %}aria-invalid="true"{% endif %}
@@ -149,7 +149,7 @@
       </fieldset>
 
       <fieldset>
-        <label for="new_pwd">Nuova Password</label>
+        <label for="new_pwd">{{ _("Nuova Password") }}</label>
         <div style="position: relative;">
           <input type="password" name="new_password" id="new_pwd"
                  {% if errors and errors.new_password %}aria-invalid="true"{% endif %}
@@ -165,7 +165,7 @@
       </fieldset>
 
       <footer style="display: flex; justify-content: flex-end;">
-        <button type="submit" style="width: auto; margin-bottom: 0;">Salva Nuova Password</button>
+        <button type="submit" style="width: auto; margin-bottom: 0;">{{ _("Salva Nuova Password") }}</button>
       </footer>
     </form>
   </article>
@@ -175,13 +175,13 @@
   <article>
     <header>
       <button aria-label="Close" rel="prev" onclick="document.getElementById('modal-delete').close()"></button>
-      <strong style="color: var(--pico-del-color);">Elimina Account</strong>
+      <strong style="color: var(--pico-del-color);">{{ _("Elimina Account") }}</strong>
     </header>
     <form action="{{ url_for('auth.settings_delete') }}" method="POST" style="margin-bottom: 0;" autocomplete="off">
-      <p>Questa azione è <strong>irreversibile</strong>. Tutti i tuoi dati verranno cancellati.</p>
+      <p>{{ _("Questa azione è irreversibile. Tutti i tuoi dati verranno cancellati.") }}</p>
 
       <fieldset>
-        <label for="current_password_del">Conferma con la tua password attuale</label>
+        <label for="current_password_del">{{ _("Conferma con la tua password attuale") }}</label>
         <div style="position: relative;">
           <input type="password" name="current_password" id="current_password_del"
                  {% if errors and errors.current_password %}aria-invalid="true"{% endif %}
@@ -195,9 +195,9 @@
           <small style="color: var(--pico-del-color); display: block; margin-top: 0.25rem;">{{ errors.current_password }}</small>
         {% endif %}
       </fieldset>
-
+      {% set _msg=_("Eliminare definitivamente l\'account") %}
       <footer style="display: flex; justify-content: flex-end;">
-        <button type="submit" class="contrast" style="width: auto; margin-bottom: 0;" onclick="return confirm('Eliminare definitivamente l\'account?');">Elimina Profilo</button>
+        <button type="submit" class="contrast" style="width: auto; margin-bottom: 0;" onclick="return confirm('{{ _msg }}');">{{ _("Elimina Profilo") }}</button>
       </footer>
     </form>
   </article>

@@ -4,6 +4,8 @@ import os
 import re
 import time
 
+from flask_babel import _
+
 ascii_pat = re.compile(r"^[\w_@\.]+$", re.ASCII)
 
 
@@ -16,7 +18,9 @@ class Validator:
         val = self.data.get(field, None)
         if not val:
             if not_null:
-                self.errors[field] = f"{field} cannot be empty"
+                self.errors[field] = _(
+                    "Un valore è richiesto per %(field)s", field=field
+                )
         else:
             try:
                 # print(f"{validator}: ->{val}<-")
@@ -37,24 +41,37 @@ class Validator:
 def is_string(s):
     if not isinstance(s, str):
         raise TypeError(
-            "`{}` must be string or unicode, {} found".format(name, type(s).__name__)
+            _(
+                "dovrebbe essere una stringa, ma ho trovato %(tipo)s",
+                tipo=type(s).__name__,
+            )
         )
     return s
 
 
-def ascii_string(s, prop="", lang="en"):
+def ascii_string(s, prop=""):
     if hasattr(prop, "_name"):
         name = prop._name
     else:
         name = str(prop)
     if not isinstance(s, str):
         raise TypeError(
-            "`{}` must be string or unicode, {} found".format(name, type(s).__name__)
+            _(
+                "`%(name)s` dovrebbe essere una stringa, ma ho trovato %(tipo)s",
+                name=name,
+                tipo=type(s).__name__,
+            )
         )
     if len(s) < 4:
-        raise ValueError(msg("almeno_4", lang) % name)
+        raise ValueError(_("`%(nome)s` dovrebbe essere almeno di 4 lettere", nome=name))
     if not ascii_pat.match(s):
-        raise ValueError(msg("solo_lettere_e_numeri", lang) % name)
+        raise ValueError(
+            _(
+                "Qualcosa non va con %(nome)s, prova as usare solo"
+                " lettere e numeri o i caratteri `_`, `.`",
+                nome=name,
+            )
+        )
     return s
 
 
@@ -64,7 +81,9 @@ def email(email):
     if m:
         return m.group()
     else:
-        raise ValueError("`%s` doesn't look like an email address." % email)
+        raise ValueError(
+            _("`%(email)s` non sembra essere un indirizzo email", email=email)
+        )
 
 
 def password(val: str) -> str:
@@ -75,19 +94,19 @@ def password(val: str) -> str:
     """
 
     if not val:
-        raise ValueError("Password cannot be empty.")
+        raise ValueError(_("Password non può essere vuota."))
 
     if len(val) < 8:
-        raise ValueError("Password must be at least 8 characters long.")
+        raise ValueError(_("Password dovrebbe avere almeno 8 caratteri."))
 
     if not any(char.isupper() for char in val):
-        raise ValueError("Password must contain at least one uppercase letter.")
+        raise ValueError(_("Password dovrebbe contenere almeno una lettera maiuscola."))
 
     if not any(char.isdigit() for char in val):
-        raise ValueError("Password must contain at least one number.")
+        raise ValueError(_("Password dovrebbe contenere almeno un numero."))
 
     if not any(not char.isalnum() for char in val):
-        raise ValueError("Password must contain at least one special character.")
+        raise ValueError(_("Password dovrebbe contenere almeno un carattere speciale."))
 
     return val
 
@@ -131,17 +150,27 @@ def date(s, date_name):
 
     # per essere una data valida deve avere 2 o 3 elementi
     if len(s) not in (2, 3):
-        raise ValueError("{}: -1- invalid date `{}`".format(date_name, _s))
+        raise ValueError(
+            _("%(date_name)s: -1- data non valida `%(_s)s`", date_name=date_name, _s=_s)
+        )
 
     # gli elementi che compongono la data devono essere numerici
     for elem in s:
         if not elem.isdigit():
-            raise ValueError("{}: -2- not numeric value `{}`".format(date_name, _s))
+            raise ValueError(
+                _(
+                    "%(date_name)s: -2- data non numerica `%(_s)s`",
+                    date_name=date_name,
+                    _s=_s,
+                )
+            )
 
     # il mese deve essere compreso fra 1 e 12
     mese = int(s[1])
     if mese not in (1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12):
-        raise ValueError("{}: -4- invalid month `{}`".format(date_name, _s))
+        raise ValueError(
+            _("%(date_name)s: -4- mese non valido `%(_s)s`", date_name=date_name, _s=_s)
+        )
 
     # Se ci sono due elementi allora deve essere del tipo gg mm
     # e gg + mm + anno corrente deve essere una data valida
@@ -150,14 +179,26 @@ def date(s, date_name):
         # devono essere piu' lunghi di due caratteri
         for elem in s:
             if len(elem) > 2:
-                raise ValueError("{}: -3- invalid date `{}`".format(date_name, _s))
+                raise ValueError(
+                    _(
+                        "%(date_name)s: -3- data non valida `%(_s)s`",
+                        date_name=date_name,
+                        _s=_s,
+                    )
+                )
 
         # Il giorno deve essere un giorno del mese
         anno_corrente = time.localtime(time.time())[0]
         anno = anno_corrente
         giorno = int(s[0])
         if giorno > calendar.monthrange(anno_corrente, mese)[1]:
-            raise ValueError("{}: -5- invalid day `{}`".format(date_name, _s))
+            raise ValueError(
+                _(
+                    "%(date_name)s: -5- giorno non valido `%(_s)s`",
+                    date_name=date_name,
+                    _s=_s,
+                )
+            )
 
         # Ritorna la data in formato "aaaa-mm-gg"
         result = str(anno) + "-" + str(mese).zfill(2) + "-" + str(giorno).zfill(2)
@@ -174,13 +215,23 @@ def date(s, date_name):
         anno = int(s[2])
         giorno = int(s[0])
     else:
-        raise ValueError("{}: -6- invalid date `{}`".format(date_name, _s))
+        raise ValueError(
+            _("%(date_name)s: -6- data non valida `%(_s)s`", date_name=date_name, _s=_s)
+        )
 
     if anno < 1900 or anno > 2100:
-        raise ValueError("{}: -7- invalid year `{}`".format(date_name, _s))
+        raise ValueError(
+            _("%(date_name)s: -7- anno non valido `%(_s)s`", date_name=date_name, _s=_s)
+        )
 
     if giorno > calendar.monthrange(anno, mese)[1]:
-        raise ValueError("{}: -8- invalid day `{}`".format(date_name, _s))
+        raise ValueError(
+            _(
+                "%(date_name)s: -8- giorno non valido `%(_s)s`",
+                date_name=date_name,
+                _s=_s,
+            )
+        )
 
     # Ritorna la data in formato "aaaa-mm-gg"
     result = str(anno) + "-" + str(mese).zfill(2) + "-" + str(giorno).zfill(2)
@@ -200,12 +251,12 @@ def to_int(value, property_name="", lang="en"):
         return value
     try:
         value = int(value)
-    except:
-        raise ValueError(msg("intero", lang) % property_name)
+    except Exception:
+        raise ValueError(_("Non è un numero intero"))
     if not isinstance(value, int) or isinstance(value, bool):
-        raise ValueError(msg("intero", lang) % property_name)
+        raise ValueError(_("Non è un numero intero"))
     if value < -0x8000000000000000 or value > 0x7FFFFFFFFFFFFFFF:
-        raise ValueError(msg("troppo_lungo", lang) % property_name)
+        raise ValueError(_("Numero troppo grande"))
     return value
 
 
@@ -222,73 +273,12 @@ def to_float(value, property_name):
         return value
     try:
         value = float(value)
-    except:
-        raise ValueError(
-            "Property %s must be float, not a `%s`"
-            % (property_name, type(value).__name__)
-        )
+    except Exception:
+        raise ValueError(_("Non è un numero"))
     if (
         not isinstance(value, float)
         or isinstance(value, int)
         or isinstance(value, bool)
     ):
-        raise ValueError(
-            "Property %s must be float, not a %s"
-            % (property_name, type(value).__name__)
-        )
+        raise ValueError(_("Non è un numero"))
     return value
-
-
-def msg(msg_code, lang):
-    if lang not in ("en", "it"):
-        lang = "en"
-    dict = {
-        "almeno_4": {
-            "en": "`%s` must be at least four characters long.",
-            "it": "`%s` dovrebbe essere di almeno 4 lettere.",
-        },
-        "solo_lettere_e_numeri": {
-            "en": "Please, for `%s` try to use only letters, numbers or `_`,`.`",
-            "it": (
-                "Qualcosa non va in `%s`, prova ad usare solo lettere numeri o i"
-                " caratteri `_`,`.`"
-            ),
-        },
-        "intero": {
-            "en": "%s must be int or long",
-            "it": "%s non sembra essere un numero intero",
-        },
-        "troppo_lungo": {
-            "en": "Property %s must fit in 64 bits",
-            "it": "%s e` veramente troppo grande come numero",
-        },
-    }
-    return dict[msg_code][lang]
-
-
-if __name__ == "__main__":
-    ll = [
-        "pippo",
-        "pluto",
-        "paperino",
-        "al",
-        ("l",),
-        "pi.p_po",
-        "pl?uto",
-        "pàperino",
-        "capp@",
-        (
-            "kjfrlkerwhflkqerhfqkerfhqlekrfhqelkrfhqlekrfhlqkerfskfjhlkwehflksjdfhsadlkfhaslkdfhslakdfhaldks"
-            " asdfsldkah skdhf "
-        ),
-    ]
-    start = time.time()
-    for item in ll:
-        try:
-            ascii_string(item, "test")
-        except Exception as err:
-            print(item, str(err))
-        else:
-            print(item, "ok!")
-    stop = time.time()
-    t1 = repr(stop - start)[0:5]

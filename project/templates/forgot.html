@@ -5,16 +5,16 @@
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>Password dimenticata</h4>
-      <p>Inserisci la tua email per ricevere il link di reset.</p>
+      <h4>{{ _("Password dimenticata") }}</h4>
+      <p>{{ _("Inserisci la tua email per ricevere il link di reset.") }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.forgot') }}">
       <fieldset>
-        <input type="email" name="email" placeholder="Indirizzo email*" required autocomplete="email" />
+        <input type="email" name="email" placeholder="{{ _('Indirizzo email') }}*" required autocomplete="email" />
       </fieldset>
-      <input type="submit" value="Invia link di reset" />
+      <input type="submit" value="{{ _('Invia link di reset') }}" />
     </form>
-    <p><a href="{{ url_for('auth.login') }}">Torna al login</a></p>
+    <p><a href="{{ url_for('auth.login') }}">{{ _("Torna al login") }}</a></p>
   </div>
   <div></div>
 </div>

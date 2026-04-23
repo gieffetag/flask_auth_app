@@ -5,8 +5,8 @@
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>Welcome</h4>
-      <p>Log in to {{ config.APP_NAME }}</p>
+      <h4>{{ _("Benvenuto") }}</h4>
+      <p>Accedi a {{ config.APP_NAME }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.login', next=request.args.get('next')) }}">
       <fieldset>
@@ -23,12 +23,12 @@
 
       <fieldset>
         <input type="checkbox" id="remember" name="remember" />
-        <label htmlFor="remember">Remember me</label>
+        <label htmlFor="remember">{{ _("Ricordami") }}</label>
       </fieldset>
-      <p><a href="{{ url_for('auth.forgot') }}">Forgot password?</a></p>
-      <input type="submit" value="Continue" />
+      <p><a href="{{ url_for('auth.forgot') }}">{{ _("Hai dimenticato la password") }}</a></p>
+      <input type="submit" value="{{ _('Continua') }}" />
     </form>
-    <p>Don't have an account? <a href="{{ url_for('auth.signup') }}">Sign up</a></p>
+    <p>{{ _("Non hai un account?") }} <a href="{{ url_for('auth.signup') }}">{{ _("Iscriviti.") }}</a></p>
   </div>
   <div></div>
 </div>

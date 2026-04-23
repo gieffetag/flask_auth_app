@@ -41,7 +41,10 @@ def require_verification():
                 "static",
             ]
             if request.endpoint not in allowed_endpoints:
-                flash("Please verify your email address to continue.", "warning")
+                flash(
+                    _("Per favore verifica il tuo indirizzo email per continuare"),
+                    "warning",
+                )
                 return redirect(url_for("auth.verify_email", next=request.full_path))
 
 
@@ -64,7 +67,7 @@ def login_post():
         user = user[0]
 
     if not user or not check_password_hash(user.password, password):
-        flash("Please check your login details and try again.", "warning")
+        flash(_("Per favore verifica le tue credenziali e riprova"), "warning")
         return redirect(url_for("auth.login", next=next_page))
 
     login_user(user, remember=remember)
@@ -88,7 +91,7 @@ def signup_post():
     if validator.is_ok:
         user = User.select(email=email)
         if user:
-            validator.errors["email"] = "Email address already exists"
+            validator.errors["email"] = _("L'indirizzo email specificato esiste già")
 
     if not validator.is_ok:
         ctx = {
@@ -101,7 +104,10 @@ def signup_post():
 
     new_user = User(email=email, name=name, password=generate_password_hash(password))
     new_user.add()
-    flash("User %s created successfully" % new_user.user_id, category="success")
+    flash(
+        _("User %(user_id)s created successfully", user_id=new_user.user_id),
+        category="success",
+    )
     user = User.get(new_user.user_id)
     user.generate_verification_code()
     _send_verification_email(user)
@@ -128,10 +134,10 @@ def verify_email_post():
     code = request.form.get("code")
     if code == current_user.verification_code:
         current_user.verified()
-        flash("Email successfully verified! Welcome!", "success")
+        flash(_("Email verificata con successo!"), "success")
         return redirect(next_page)
     else:
-        flash("Invalid verification code. Please try again.", "danger")
+        flash(_("Codice di verifica non valido. Riprova."), "danger")
         return redirect(url_for("auth.verify_email", next=next_page))
 
 
@@ -168,8 +174,10 @@ def forgot_post():
         _send_password_reset_email(user, token)
 
     flash(
-        "Se l'indirizzo email è registrato, "
-        "riceverai a breve un link per reimpostare la password.",
+        _(
+            "Se l'indirizzo email è registrato, "
+            "riceverai a breve un link per reimpostare la password."
+        ),
         "success",
     )
     return redirect(url_for("auth.login"))
@@ -183,7 +191,8 @@ def reset_password(token):
     email = verify_reset_token(token)
     if not email:
         flash(
-            "Il link di recupero è invalido o scaduto. Richiedine uno nuovo.", "danger"
+            _("Il link di recupero è invalido o scaduto. Richiedine uno nuovo."),
+            "danger",
         )
         return redirect(url_for("auth.forgot"))
 
@@ -196,7 +205,8 @@ def reset_password_post(token):
     email = verify_reset_token(token)
     if not email:
         flash(
-            "Il link di recupero è invalido o scaduto. Richiedine uno nuovo.", "danger"
+            _("Il link di recupero è invalido o scaduto. Richiedine uno nuovo."),
+            "danger",
         )
         return redirect(url_for("auth.forgot"))
 
@@ -212,7 +222,7 @@ def reset_password_post(token):
     user.update_password(generate_password_hash(password))
 
     flash(
-        "La tua password è stata aggiornata con successo! Ora puoi fare il login.",
+        _("La tua password è stata aggiornata con successo! Ora puoi fare il login."),
         "success",
     )
     return redirect(url_for("auth.login"))
@@ -231,9 +241,9 @@ def settings_profile():
     locale = request.form.get("locale")
     errors = {}
     if not name or len(name) < 3:
-        errors["name"] = "Il nome deve contenere almeno 3 caratteri."
+        errors["name"] = _("Il nome deve contenere almeno 3 caratteri.")
     if locale not in language_dict().keys():
-        errors["locale"] = "Lingua non gestita"
+        errors["locale"] = _("Lingua non gestita")
 
     if errors:
         return render_template(
@@ -246,7 +256,7 @@ def settings_profile():
         )
 
     current_user.update_profile(name, locale)
-    flash("Profilo aggiornato con successo.", "success")
+    flash(_("Profilo aggiornato con successo."), "success")
     return redirect(url_for("auth.settings"))
 
 
@@ -258,9 +268,12 @@ def settings_password():
     errors = {}
 
     if not check_password_hash(current_user.password, current_pwd):
-        errors["current_password"] = "La password attuale non è corretta."
+        errors["current_password"] = _("La password attuale non è corretta.")
         return render_template(
-            "settings.html", open_modal="modal-password", errors=errors
+            "settings.html",
+            open_modal="modal-password",
+            errors=errors,
+            language_dict=language_dict(),
         )
 
     validator = validate.Validator(request.form)
@@ -268,11 +281,14 @@ def settings_password():
 
     if not validator.is_ok:
         return render_template(
-            "settings.html", open_modal="modal-password", errors=validator.errors
+            "settings.html",
+            open_modal="modal-password",
+            errors=validator.errors,
+            language_dict=language_dict(),
         )
 
     current_user.update_password(generate_password_hash(new_pwd))
-    flash("Password aggiornata con successo.", "success")
+    flash(_("Password aggiornata con successo."), "success")
     return redirect(url_for("auth.settings"))
 
 
@@ -284,27 +300,29 @@ def settings_email():
     errors = {}
 
     if not check_password_hash(current_user.password, current_pwd):
-        errors["current_password"] = "Password non corretta."
+        errors["current_password"] = _("Password non corretta.")
         return render_template(
             "settings.html",
             open_modal="modal-email",
             email_input=new_email,
             errors=errors,
+            language_dict=language_dict(),
         )
 
     if User.select(email=new_email):
-        errors["new_email"] = "Email già in uso."
+        errors["new_email"] = _("Email già in uso.")
         return render_template(
             "settings.html",
             open_modal="modal-email",
             email_input=new_email,
             errors=errors,
+            language_dict=language_dict(),
         )
 
     current_user.update_email(new_email)
     current_user.generate_verification_code()
     _send_verification_email(current_user)
-    flash("Email aggiornata. Controlla la posta per la verifica.", "success")
+    flash(_("Email aggiornata. Controlla la posta per la verifica."), "success")
     return redirect(url_for("main.index"))
 
 
@@ -313,12 +331,20 @@ def settings_email():
 def settings_delete():
     current_pwd = request.form.get("current_password")
     if not check_password_hash(current_user.password, current_pwd):
-        flash("Password errata. Impossibile eliminare l'account.", "danger")
-        return render_template("settings.html", open_modal="modal-delete")
+        # flash(_("Password errata. Impossibile eliminare l'account."), "danger")
+        errors = {
+            "current_password": _("Password errata. Impossibile eliminare l'account.")
+        }
+        ctx = {
+            "open_modal": "modal-delete",
+            "errors": errors,
+            "language_dict": language_dict(),
+        }
+        return render_template("settings.html", **ctx)
 
     current_user.delete_account()
     logout_user()
-    flash("Account eliminato definitivamente.", "success")
+    flash(_("Account eliminato definitivamente."), "success")
     return redirect(url_for("main.index"))
 
 
@@ -333,12 +359,17 @@ def _get_next():
 
 
 def _send_verification_email(user):
-    content = (
-        f"Ciao {user.name or 'Utente'},\n\n"
-        f"Il tuo codice di verifica è: {user.verification_code}\n\n"
-        "Inseriscilo nell'applicazione per continuare."
+    content = _(
+        "Ciao %(user_name)s,\n\n"
+        "Il tuo codice di verifica è: %(verification_code)s\n\n"
+        "Inseriscilo nell'applicazione per continuare.",
+        user_name=user.name,
+        verification_code=user.verification_code,
     )
-    subject = f"[{current_app.config.get('APP_NAME', 'App')}] Codice di verifica"
+
+    subject = _(
+        "[%(app)s] Codice di verifica", app=current_app.config.get("APP_NAME", "App")
+    )
 
     # Recupera un mittente predefinito da app.config, o usa un fallback
     sender_email = current_app.config.get("EMAIL", {}).get(
@@ -394,13 +425,17 @@ def verify_reset_token(token, max_age=3600):
 
 def _send_password_reset_email(user, token):
     reset_url = url_for("auth.reset_password", token=token, _external=True)
-    content = (
-        f"Ciao {user.name or 'Utente'},\n\n"
-        f"Per reimpostare la tua password, clicca sul seguente link:\n"
-        f"{reset_url}\n\n"
-        "Se non hai richiesto tu il reset, ignora semplicemente questa email."
+    content = _(
+        "Ciao %(user_name)s,\n\n"
+        "Per reimpostare la tua password, clicca sul seguente link:\n"
+        "%(reset_url)s\n\n"
+        "Se non hai richiesto tu il reset, ignora semplicemente questa email.",
+        user_name=user.name,
+        reset_url=reset_url,
     )
-    subject = f"[{current_app.config.get('APP_NAME', 'App')}] Recupero Password"
+    subject = _(
+        "[%(app)s] Recupero Password", app=current_app.config.get("APP_NAME", "App")
+    )
     sender_email = current_app.config.get("EMAIL", {}).get(
         "default_sender", "noreply@example.com"
     )
@@ -415,6 +450,11 @@ def _send_password_reset_email(user, token):
         "content": content,
     }
     mail.send(mail_args)
+
+
+# Necessario per non fare andare in RecursionError
+# nella funzione get_locale()
+LANGUAGES = ["it", "en"]
 
 
 def language_dict():

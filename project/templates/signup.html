@@ -5,18 +5,18 @@
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>Welcome</h4>
-      <p>Sign up to {{ config.APP_NAME }} to continue</p>
+      <h4>{{ _("Benvenuto") }}</h4>
+      <p>{{ _("Registrati a") }} {{ config.APP_NAME }} {{ _("per continuare") }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.signup') }}">
 
       <fieldset>
-        <input type="text" name="name" placeholder="Name*" autocomplete="name" value="{{ name }}"/>
+        <input type="text" name="name" placeholder="{{ _('Nome') }}*" autocomplete="name" value="{{ name }}"/>
         {% if errors and errors.name %}<small><span class="pico-color-red-300">{{ errors.name }}</span></small>{% endif %}
       </fieldset>
 
       <fieldset>
-        <input type="email" name="email" placeholder="Email address*" autocomplete="email" value="{{ email }}"/>
+        <input type="email" name="email" placeholder="{{ _('Indirizzo email') }}*" autocomplete="email" value="{{ email }}"/>
         {% if errors and errors.email %}<small><span class="pico-color-red-300">{{ errors.email }}</span></small>{% endif %}
       </fieldset>
 
@@ -30,9 +30,9 @@
         {% if errors and errors.password %}<small><span class="pico-color-red-300">{{ errors.password }}</span></small>{% endif %}
       </fieldset>
 
-      <input type="submit" value="Continue" />
+      <input type="submit" value="{{ _('Continua') }}" />
     </form>
-    <p>Already have an account? <a href="{{ url_for('auth.login') }}">Log in</a></p>
+    <p>Already have an account? <a href="{{ url_for('auth.login') }}">{{ _("Accedi") }}</a></p>
   </div>
   <div></div>
 </div>

@@ -5,12 +5,12 @@
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>Reimposta Password</h4>
-      <p>Inserisci la tua nuova password.</p>
+      <h4>{{ _("Reimposta Password") }}</h4>
+      <p>{{ _("Inserisci la tua nuova password.") }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.reset_password', token=token) }}">
       <fieldset style="position: relative;">
-        <input type="password" name="password" id="password_input" placeholder="Nuova password*" required />
+        <input type="password" name="password" id="password_input" placeholder="{{ _('Nuova password') }}*" required />
         <button type="button"
                 onclick="togglePasswordVisibility('password_input', this)"
                 style="position: absolute; right: 0; top: 0; height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2); border: none; background: transparent; color: var(--pico-muted-color); padding: 0 1rem; cursor: pointer; display: flex; align-items: center;">
@@ -18,7 +18,7 @@
         </button>
         {% if errors and errors.password %}<small><span class="pico-color-red-300">{{ errors.password }}</span></small>{% endif %}
       </fieldset>
-      <input type="submit" value="Aggiorna password" />
+      <input type="submit" value="{{ _('Aggiorna password') }}" />
     </form>
   </div>
   <div></div>

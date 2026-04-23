@@ -5,8 +5,8 @@
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>Please, verify your Email Address</h4>
-      <p>We sent a 6-digit code to {{ current_user.email }}</p>
+      <h4>{{ _("Per favore verifica il tuo indirizzo Email") }}</h4>
+      <p>{{ _("Abbiamo inviato un codice di 6 cifre a") }} {{ current_user.email }}</p>
     </hgroup>
     <form method="POST" action="{{ url_for('auth.verify_email', next=request.args.get('next')) }}">
       <fieldset>
@@ -14,7 +14,7 @@
       </fieldset>
       <input type="submit" value="Verify" />
     </form>
-    <p>Haven't received the code? <a href="{{ url_for('auth.resend_code') }}">Re-send</a></p>
+    <p>{{ _("Non hai ricevuto il codice?") }} <a href="{{ url_for('auth.resend_code') }}">{{ _("Rimanda il codice") }}</a></p>
   </div>
   <div></div>
 </div>
