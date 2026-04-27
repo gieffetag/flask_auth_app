@@ -1,37 +1,44 @@
 import os
 
 import pytest
+from flask import Flask
 from werkzeug.security import generate_password_hash
 
-from gflask import create_app
+from gflask import GFlaskAuth
+from gflask import main
 from gflask.database import db
 from gflask.models import User
 
 
 @pytest.fixture
 def app():
-    """Crea e configura una nuova istanza dell'app per ogni test."""
+    """Crea e configura un'app Host fittizia a cui attaccare la libreria."""
     os.environ["FLASK_TESTING"] = "true"
-    os.environ["DATABASE_URL"] = "sqlite:///:memory:"
-    os.environ["SECRET_KEY"] = "super-secret-key-for-tests"
 
-    app = create_app()
+    # 1. Creiamo un'app Flask nuda e cruda (come farebbe l'utente finale)
+    app = Flask(__name__)
     app.config.update(
         {
             "TESTING": True,
             "WTF_CSRF_ENABLED": False,
-            "BABEL_DEFAULT_LOCALE": "it",
+            "DATABASE_URL": "sqlite:///:memory:",
+            "SECRET_KEY": "super-secret-key-for-tests",
         }
     )
 
-    with app.app_context():
-        from gflask import models
+    # 2. Inizializziamo l'estensione GFlaskAuth passandole l'app
+    auth_extension = GFlaskAuth()
+    auth_extension.init_app(app)
 
-        models.create_all()
+    # 3. Registriamo il blueprint 'main' per simulare le rotte dell'app ospite
+    app.register_blueprint(main.bp)
 
     yield app
 
+    # Pulizia
     with app.app_context():
+        from gflask import models
+
         models.drop_all()
 
 

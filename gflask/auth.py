@@ -20,7 +20,12 @@ from . import mail
 from . import validate
 from .models import User
 
-bp = Blueprint("auth", __name__)
+bp = Blueprint(
+    "auth",
+    __name__,
+    template_folder="templates",
+    static_folder="static",
+)
 
 
 @bp.before_app_request
