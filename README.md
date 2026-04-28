@@ -35,7 +35,7 @@ auth = GFlaskAuth(app)
 ```
 
 ### 2. Protecting Routes
-The library integrates with **Flask-Login**. You can use the standard decorators to protect your application's routes:
+The library integrates seamlessly with **Flask-Login**. You can use the standard decorators to protect your application's routes:
 
 ```python
 from flask_login import login_required, current_user
@@ -48,7 +48,7 @@ def dashboard():
 
 ## Available Modules
 
-gflask exposes its core utilities directly at the package level for easy access:
+gflask exposes its core utilities directly at the package level for easy access in your host application:
 
 - **`db`**: A centralized SQLAlchemy-based database manager for executing raw SQL (Query, Insert, Execute) within or outside transactions.
 - **`utils`**: Helpers for token generation, date formatting, and string manipulation.
@@ -59,6 +59,7 @@ gflask exposes its core utilities directly at the package level for easy access:
 
 Example usage:
 ```python
+from flask import request
 from gflask import db, utils, validate
 
 # Generate a unique token
@@ -69,12 +70,39 @@ v = validate.Validator(request.form)
 email = v.check("email", "email")
 ```
 
+## Template Reusability and UI Customization
+
+gflask uses **Pico.css** for a clean, responsive default look. To prevent conflicts with your host application, all gflask templates are namespaced under the `gflask/` directory.
+
+### Extending the Base Template
+You don't need to write your HTML skeleton from scratch. You can leverage the `gflask` base template in your own project's templates (e.g., `templates/index.html`) by extending `gflask/base.html`:
+
+```html
+{% extends "gflask/base.html" %}
+
+{% block application_menu %}
+<ul>
+  <li><strong><a href="/" class="contrast">My Awesome App</a></strong></li>
+  <li><a href="/about">About Us</a></li>
+</ul>
+{% endblock %}
+
+{% block content %}
+<hgroup>
+  <h1>Welcome to my app</h1>
+  <p>This page uses the gflask base layout!</p>
+</hgroup>
+{% endblock %}
+```
+
+### Overriding Default Pages
+If you want to completely change the look of the default authentication pages (Login, Signup, etc.), you can override them. 
+
+Just create a `gflask` folder inside your host project's `templates` directory and place a file with the exact same name:
+`your_project/templates/gflask/login.html`
+
+Flask will automatically prioritize your custom template over the default one provided by the library. Available templates to override include: `login.html`, `signup.html`, `forgot.html`, `reset.html`, `verify.html`, `settings.html`, and `profile.html`.
+
 ## Localization
 
 The library has built-in support for **Flask-Babel** and is pre-translated in **English** and **Italian**. It automatically handles language selection based on the user's profile settings or browser preferences.
-
-## UI Customization
-
-gflask uses **Pico.css** for a clean, responsive default look. You can override any library template by creating a file with the same name in your project's `templates/` folder:
-
-- `login.html`, `signup.html`, `forgot.html`, `reset.html`, `verify.html`, `settings.html`, `profile.html`.
