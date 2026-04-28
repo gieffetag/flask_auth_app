@@ -45,23 +45,30 @@ class GFlaskAuth:
             self.init_app(app)
 
     def init_app(self, app):
-        # 1. Configurazioni di default se l'app Host non le ha
+        # Configurazioni di default se l'app Host non le ha
         app.config.setdefault("APP_NAME", "Flask App")
         app.config.setdefault("BABEL_DEFAULT_LOCALE", "it")
+
+        ## Aggiungo traduzioni di gflask
+        gflask_translations = utils.sib_path(__file__, "translations")
+        existing_dirs = app.config.get("BABEL_TRANSLATION_DIRECTORIES", "translations")
+        app.config["BABEL_TRANSLATION_DIRECTORIES"] = (
+            f"{existing_dirs};{gflask_translations}"
+        )
 
         if "EMAIL" not in app.config:
             app.config["EMAIL"] = self._load_email_config()
 
-        # 2. Inizializzazione Database
+        # Inizializzazione Database
         if "DATABASE_URL" in app.config:
             db.init_app(app.config["DATABASE_URL"])
             with app.app_context():
                 models.create_all()
 
-        # 3. Inizializzazione Babel
+        # Inizializzazione Babel
         babel.init_app(app, locale_selector=get_locale)
 
-        # 4. Inizializzazione Flask-Login
+        # Inizializzazione Flask-Login
         login_manager = LoginManager()
         login_manager.login_view = "auth.login"
         login_manager.init_app(app)
@@ -70,7 +77,7 @@ class GFlaskAuth:
         def load_user(user_id):
             return models.User.get(user_id)
 
-        # 5. Registrazione del Blueprint
+        # Registrazione del Blueprint
         app.register_blueprint(auth.bp)
 
     def _load_email_config(self):
