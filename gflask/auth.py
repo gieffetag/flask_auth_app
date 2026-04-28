@@ -25,6 +25,7 @@ bp = Blueprint(
     __name__,
     template_folder="templates",
     static_folder="static",
+    static_url_path="/gflask-static",
 )
 
 
@@ -44,6 +45,7 @@ def require_verification():
                 "auth.logout",
                 "auth.resend_code",
                 "static",
+                "auth.static",
             ]
             if request.endpoint not in allowed_endpoints:
                 flash(
@@ -351,6 +353,12 @@ def settings_delete():
     logout_user()
     flash(_("Account eliminato definitivamente."), "success")
     return redirect(url_for("main.index"))
+
+
+@bp.route("/profile")
+@login_required
+def profile():
+    return render_template("profile.html")
 
 
 # ------------------------------------------------------------------ #

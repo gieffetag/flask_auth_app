@@ -4,9 +4,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pico.min.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='pico.colors.min.css') }}">
-    <title>Flask auth app</title>
+    <link rel="stylesheet" href="{{ url_for('auth.static', filename='pico.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('auth.static', filename='pico.colors.min.css') }}">
+    <title>{{ config.APP_NAME }}</title>
     <style>
       :root {
         --pico-font-size: 90%;
@@ -41,9 +41,14 @@
   <body>
     <header class="container">
       <nav style="border-bottom: solid gray 1px;">
+
+        {% block application_menu %}
         <ul>
-          <li><strong><a href="{{ url_for('main.index') }}" class="contrast">Flask Auth App</a></strong></li>
+          <li><strong><a href="/" class="contrast">{{ config.APP_NAME }}</a></strong></li>
         </ul>
+        {% endblock %}
+
+        {% block user_menu %}
         <ul>
         {% if current_user.is_authenticated %}
           {% include 'user_menu.html' %}
@@ -53,6 +58,8 @@
           </li>
         {% endif %}
         </ul>
+        {% endblock %}
+
       </nav>
     {% include 'messages.html' %}
     </header>

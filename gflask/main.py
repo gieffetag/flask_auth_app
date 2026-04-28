@@ -14,8 +14,3 @@ def index():
     # flash("Danger", "danger")
     return render_template("index.html")
 
-
-@bp.route("/profile")
-@login_required
-def profile():
-    return render_template("profile.html")
