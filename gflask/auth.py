@@ -59,7 +59,7 @@ def require_verification():
 def login():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    return render_template("login.html")
+    return render_template("gflask/login.html")
 
 
 @bp.route("/login", methods=["POST"])
@@ -85,7 +85,7 @@ def login_post():
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    return render_template("signup.html")
+    return render_template("gflask/signup.html")
 
 
 @bp.route("/signup", methods=["POST"])
@@ -107,7 +107,7 @@ def signup_post():
             "password": password,
             "errors": validator.errors,
         }
-        return render_template("signup.html", **ctx)
+        return render_template("gflask/signup.html", **ctx)
 
     new_user = User(email=email, name=name, password=generate_password_hash(password))
     new_user.add()
@@ -129,7 +129,7 @@ def verify_email():
     if current_user.is_verified:
         next_page = _get_next()
         return redirect(next_page)
-    return render_template("verify.html")
+    return render_template("gflask/verify.html")
 
 
 @bp.route("/verify", methods=["POST"])
@@ -167,7 +167,7 @@ def logout():
 def forgot():
     if current_user.is_authenticated:
         return redirect(url_for("main.index"))
-    return render_template("forgot.html")
+    return render_template("gflask/forgot.html")
 
 
 @bp.route("/forgot", methods=["POST"])
@@ -203,7 +203,7 @@ def reset_password(token):
         )
         return redirect(url_for("auth.forgot"))
 
-    return render_template("reset.html", token=token)
+    return render_template("gflask/reset.html", token=token)
 
 
 @bp.route("/reset/<token>", methods=["POST"])
@@ -222,7 +222,7 @@ def reset_password_post(token):
     password = validator.check("password", "password")
 
     if not validator.is_ok:
-        return render_template("reset.html", errors=validator.errors, token=token)
+        return render_template("gflask/reset.html", errors=validator.errors, token=token)
 
     ## Aggiorna la password
     user = User.select(email=email)[0]
@@ -238,7 +238,7 @@ def reset_password_post(token):
 @bp.route("/settings")
 @login_required
 def settings():
-    return render_template("settings.html", language_dict=language_dict())
+    return render_template("gflask/settings.html", language_dict=language_dict())
 
 
 @bp.route("/settings/name", methods=["POST"])
@@ -254,7 +254,7 @@ def settings_profile():
 
     if errors:
         return render_template(
-            "settings.html",
+            "gflask/settings.html",
             open_modal="modal-profile",
             name_input=name,
             locale_input=locale,
@@ -277,7 +277,7 @@ def settings_password():
     if not check_password_hash(current_user.password, current_pwd):
         errors["current_password"] = _("La password attuale non è corretta.")
         return render_template(
-            "settings.html",
+            "gflask/settings.html",
             open_modal="modal-password",
             errors=errors,
             language_dict=language_dict(),
@@ -288,7 +288,7 @@ def settings_password():
 
     if not validator.is_ok:
         return render_template(
-            "settings.html",
+            "gflask/settings.html",
             open_modal="modal-password",
             errors=validator.errors,
             language_dict=language_dict(),
@@ -309,7 +309,7 @@ def settings_email():
     if not check_password_hash(current_user.password, current_pwd):
         errors["current_password"] = _("Password non corretta.")
         return render_template(
-            "settings.html",
+            "gflask/settings.html",
             open_modal="modal-email",
             email_input=new_email,
             errors=errors,
@@ -319,7 +319,7 @@ def settings_email():
     if User.select(email=new_email):
         errors["new_email"] = _("Email già in uso.")
         return render_template(
-            "settings.html",
+            "gflask/settings.html",
             open_modal="modal-email",
             email_input=new_email,
             errors=errors,
@@ -347,7 +347,7 @@ def settings_delete():
             "errors": errors,
             "language_dict": language_dict(),
         }
-        return render_template("settings.html", **ctx)
+        return render_template("gflask/settings.html", **ctx)
 
     current_user.delete_account()
     logout_user()
@@ -358,7 +358,7 @@ def settings_delete():
 @bp.route("/profile")
 @login_required
 def profile():
-    return render_template("profile.html")
+    return render_template("gflask/profile.html")
 
 
 # ------------------------------------------------------------------ #

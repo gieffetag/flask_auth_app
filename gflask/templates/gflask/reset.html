@@ -1,27 +1,16 @@
-{% extends "base.html" %}
+{% extends "gflask/base.html" %}
 
 {% block content %}
 <div class="login-form">
   <div></div>
   <div>
     <hgroup style="text-align: center;">
-      <h4>{{ _("Benvenuto") }}</h4>
-      <p>{{ _("Registrati a") }} {{ config.APP_NAME }} {{ _("per continuare") }}</p>
+      <h4>{{ _("Reimposta Password") }}</h4>
+      <p>{{ _("Inserisci la tua nuova password.") }}</p>
     </hgroup>
-    <form method="POST" action="{{ url_for('auth.signup') }}">
-
-      <fieldset>
-        <input type="text" name="name" placeholder="{{ _('Nome') }}*" autocomplete="name" value="{{ name }}"/>
-        {% if errors and errors.name %}<small><span class="pico-color-red-300">{{ errors.name }}</span></small>{% endif %}
-      </fieldset>
-
-      <fieldset>
-        <input type="email" name="email" placeholder="{{ _('Indirizzo email') }}*" autocomplete="email" value="{{ email }}"/>
-        {% if errors and errors.email %}<small><span class="pico-color-red-300">{{ errors.email }}</span></small>{% endif %}
-      </fieldset>
-
+    <form method="POST" action="{{ url_for('auth.reset_password', token=token) }}">
       <fieldset style="position: relative;">
-        <input type="password" name="password" id="password_input" placeholder="Password*" value="{{ password }}"/>
+        <input type="password" name="password" id="password_input" placeholder="{{ _('Nuova password') }}*" required />
         <button type="button"
                 onclick="togglePasswordVisibility('password_input', this)"
                 style="position: absolute; right: 0; top: 0; height: calc(1rem * var(--pico-line-height) + var(--pico-form-element-spacing-vertical) * 2 + var(--pico-border-width) * 2); border: none; background: transparent; color: var(--pico-muted-color); padding: 0 1rem; cursor: pointer; display: flex; align-items: center;">
@@ -29,10 +18,8 @@
         </button>
         {% if errors and errors.password %}<small><span class="pico-color-red-300">{{ errors.password }}</span></small>{% endif %}
       </fieldset>
-
-      <input type="submit" value="{{ _('Continua') }}" />
+      <input type="submit" value="{{ _('Aggiorna password') }}" />
     </form>
-    <p>{{ _("Hai già un account?") }} <a href="{{ url_for('auth.login') }}">{{ _("Accedi") }}</a></p>
   </div>
   <div></div>
 </div>

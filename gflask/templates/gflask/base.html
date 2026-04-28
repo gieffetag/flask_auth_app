@@ -51,7 +51,7 @@
         {% block user_menu %}
         <ul>
         {% if current_user.is_authenticated %}
-          {% include 'user_menu.html' %}
+          {% include 'gflask/user_menu.html' %}
         {% else %}
           <li>
               <a href="{{ url_for('auth.login') }}">Login</a>
@@ -61,7 +61,7 @@
         {% endblock %}
 
       </nav>
-    {% include 'messages.html' %}
+    {% include 'gflask/messages.html' %}
     </header>
     <main class="container">
     {% block content %}

@@ -12,5 +12,5 @@ def index():
     # flash("Success", "success")
     # flash("Warning", "warning")
     # flash("Danger", "danger")
-    return render_template("index.html")
+    return render_template("gflask/index.html")
 
