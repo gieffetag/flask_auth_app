@@ -152,6 +152,10 @@ def dump(values):
 
 
 def f_dump(values):
+    """
+    Da usare come filtro per jinja:
+    app.jinja_env.filters['dump'] = gflask.utils.f_dump
+    """
     r = dump(values)
     return markupsafe.Markup(r)
 
