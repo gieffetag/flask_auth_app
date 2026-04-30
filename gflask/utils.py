@@ -13,6 +13,8 @@ import uuid
 from collections import defaultdict
 from configparser import ConfigParser
 
+import markupsafe
+
 try:
     unicode
     basestring
@@ -147,6 +149,11 @@ def table_to_text(ll):
 
 def dump(values):
     return "<pre>%s</pre>" % pprint.pformat(values)
+
+
+def f_dump(values):
+    r = dump(values)
+    return markupsafe.Markup(r)
 
 
 def set_proxy(verbose=False):
